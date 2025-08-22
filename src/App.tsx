@@ -1,6 +1,7 @@
 import Card from "./components/Card/Card";
 import moment from "moment/min/moment-with-locales";
 import "./App.css";
+import { Heading } from "@chakra-ui/react"
 
 function getSemanaAtual() {
     const inicioSemana = moment().startOf("isoWeek");
@@ -20,7 +21,7 @@ export default function App() {
     return (
         <section className="flex container">
             <div className="flex title">
-                <h1>Compromissos</h1>
+                <Heading>Compromissos</Heading>
             </div>
             <div className="flex cardsContainer">
                 {
