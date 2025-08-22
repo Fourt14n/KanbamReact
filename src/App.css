@@ -1,0 +1,17 @@
+.container{
+    flex-direction: column;
+    min-width: 100vw;
+    min-height: 100vh;
+}
+
+.cardsContainer{
+    gap: 2%;
+    padding: 0 2rem;
+    height: 80vh;
+}
+
+.title{
+    height: 15vh;
+    align-items: center;
+    margin-left: 2rem;
+}

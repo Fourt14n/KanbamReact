@@ -1,0 +1,22 @@
+.cardContainer{
+    flex-direction: column;
+    min-width: 30%;
+}
+.cardContent{
+    overflow: scroll;
+    height: 85%;
+}
+
+.actionsCard{
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    gap: 1rem;
+}
+.cardHeader{
+    justify-content: space-between;
+    padding: 1rem;
+}
+.cardHeader p{
+    font-weight: 700;
+}
