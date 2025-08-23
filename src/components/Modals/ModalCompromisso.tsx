@@ -17,9 +17,19 @@ import "../global.css";
 import * as React from "react";
 
 interface Data {
-  id: number,
   data: string
-  onSave: (compromisso: compromissoDTO) => void
+  onSave: (compromisso: compromissoDTO) => void,
+  onDelete: (compromisso: compromissoDTO) => void
+  isOpen: boolean,
+  onOpen: () => void,
+  onClose: () => void,
+  objCompromisso: compromissoDTO,
+  titulo: string,
+  setTitulo: React.Dispatch<React.SetStateAction<string>>,
+  descricao: string,
+  setDescricao: React.Dispatch<React.SetStateAction<string>>
+  horario: string,
+  setHorario: React.Dispatch<React.SetStateAction<string>>
 }
 
 interface compromissoDTO {
@@ -29,27 +39,31 @@ interface compromissoDTO {
   horario: string
 }
 
-export default function ModalCompromisso({ data, onSave, id }: Data) {
-  const { isOpen, onOpen, onClose } = useDisclosure()
-  const [titulo, setTitulo] = React.useState("");
-  const [descricao, setDescricao] = React.useState("");
-  const [horario, setHorario] = React.useState("");
+export default function ModalCompromisso({ data, onSave, isOpen, onClose, onOpen, objCompromisso, titulo, setTitulo, descricao, setDescricao, horario, setHorario, onDelete }: Data) {
 
   function handleClose() {
     onClose();
     setTitulo("");
     setDescricao("");
     setHorario("");
+    objCompromisso = { id: 0, titulo: "", descricao: "", horario: "" };
   }
+  
+  React.useEffect(() => {
+    console.log("Use effect modal")
+    if (objCompromisso.titulo !== "") {
+      setTitulo(objCompromisso.titulo);
+      setDescricao(objCompromisso.descricao);
+      setHorario(objCompromisso.horario);
+    }
+  }, [objCompromisso])
 
   return (
     <>
-      <Icon onClick={onOpen} className="pointer" icon="mdi:plus-circle" color="black" width={20} />
-
       <Modal size={"xl"} isOpen={isOpen} onClose={handleClose}>
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader>Criar novo compromisso em {data}</ModalHeader>
+          <ModalHeader>{objCompromisso.id > 0 ? "Alterar" : "Criar novo"} compromisso em {data}</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
             <FormControl>
@@ -67,13 +81,19 @@ export default function ModalCompromisso({ data, onSave, id }: Data) {
           </ModalBody>
 
           <ModalFooter>
-            <Button colorScheme='red' mr={3} onClick={onClose}>
+            {objCompromisso.id > 0 && (
+              <Button onClick={() => {
+                onDelete(objCompromisso);
+                handleClose();
+              }} colorScheme='red' mr={3}>Excluir</Button>
+            )}
+            <Button colorScheme='blue' mr={3} onClick={onClose}>
               Fechar
             </Button>
             <Button onClick={() => {
-              onSave({ id: id, titulo, descricao, horario });
+              onSave({ id: objCompromisso.id, titulo, descricao, horario });
               handleClose();
-            }} colorScheme='green'>{id > 0 ? "Alterar" : "Criar"}</Button>
+            }} colorScheme='green'>{objCompromisso.id > 0 ? "Alterar" : "Criar"}</Button>
           </ModalFooter>
         </ModalContent>
       </Modal>
