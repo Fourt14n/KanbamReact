@@ -9,3 +9,11 @@
     width: 90%;
     user-select: none;
 }
+
+.cardActionTitle{
+    font-weight: 600;
+}
+
+.cardActionHour{
+    font-weight: 300;
+}

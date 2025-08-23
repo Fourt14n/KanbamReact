@@ -1,16 +1,33 @@
 import "../global.css";
 import "./CardAction.css";
 
-export default function CardAction(){
-    return(
-        <div className="flex pointer cardActionContainer">
-            <div className="cardActionTitle">
-                REUNIÃO COM O JOÃO DA FERDINANDO FERNANDES LTDA
-            </div>
+interface OdeioReact {
+    compromissos: CardActionDTO
+}
 
-            <div className="cardActionHour">
-                08:00 - 10:00
-            </div>
-        </div>
+interface CardActionDTO extends Array<{
+    titulo: string;
+    descricao: string;
+    horario: string;
+}> {}
+
+export default function CardAction(compromissos: OdeioReact) {
+    console.log("Compromissos")
+    console.log(compromissos);
+    return (
+        <>
+            {compromissos.compromissos.map(item => {
+                return (
+                    <div className="flex pointer cardActionContainer">
+                    <div className="cardActionTitle">
+                        {item.titulo}
+                    </div>
+                    <div className="cardActionHour">
+                        {item.horario}
+                    </div>
+                </div>
+                )
+            })}
+        </>
     )
 }
