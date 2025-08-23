@@ -28,7 +28,7 @@ export default function App() {
                 {
                     semanaAtual.map(dia => {
                         return (
-                            <Card key={semanaAtual.indexOf(dia)} day={dia} isToday={moment().isSame(moment(dia, "DD/MM/YYYY"), 'day')} />
+                            <Card cardId={semanaAtual.indexOf(dia)} key={semanaAtual.indexOf(dia)} day={dia} isToday={moment().isSame(moment(dia, "DD/MM/YYYY"), 'day')} />
                         )
                     })
                 }

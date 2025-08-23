@@ -2,15 +2,18 @@ import { Icon } from "@iconify/react";
 import CardAction from "../CardAction/CardAction";
 import "../global.css";
 import "./Card.css";
-import { act, useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import ModalCompromisso from "../Modals/ModalCompromisso";
 import moment from "moment";
 import { useDisclosure } from "@chakra-ui/react";
+import { dropTargetForElements } from "@atlaskit/pragmatic-drag-and-drop/element/adapter";
+import invariant from "tiny-invariant";
 
 
 interface DayOfWeek {
     day: string,
-    isToday: boolean
+    isToday: boolean,
+    cardId: number
 }
 
 interface compromissoDTO {
@@ -28,33 +31,55 @@ interface CardActionDTO extends Array<{
 }> { }
 
 
-export default function Card({ day, isToday }: DayOfWeek) {
+export default function Card({ day, isToday, cardId }: DayOfWeek) {
     const { isOpen, onOpen, onClose } = useDisclosure();
     const [objCompromisso, setObjCompromisso] = useState<compromissoDTO>({ id: 0, titulo: "", descricao: "", horario: "" });
     const [titulo, setTitulo] = useState("");
     const [descricao, setDescricao] = useState("");
     const [horario, setHorario] = useState("");
-
     const [actionsCard, setActionsCard] = useState<CardActionDTO>([{ id: 0, titulo: "", descricao: "", horario: "" }]);
-    let id = 0;
+    let idActionCard = 0;
+
+    const columnRef = useRef(null); // Create a ref for the column
+    const [isDraggedOver, setIsDraggedOver] = useState(false);
+
+    useEffect(() => {
+        VerificaDiaAtual();
+        setObjCompromisso({ id: 0, titulo: "", descricao: "", horario: "" });
+
+        if (!columnRef.current) return;
+        const columnEl = columnRef.current;
+        invariant(columnEl); // Ensure the column element exists
+
+        // Set up the drop target for the column element
+        return dropTargetForElements({
+            element: columnEl,
+            onDragStart: () => setIsDraggedOver(true),
+            onDragEnter: () => setIsDraggedOver(true),
+            onDragLeave: () => setIsDraggedOver(false),
+            onDrop: () => setIsDraggedOver(false),
+            getData: () => ({ cardId }),
+            getIsSticky: () => true,
+        });
+    }, [cardId, actionsCard, onClose]);
 
     function adicionarCompromisso(c: compromissoDTO) {
         c.id = getLastId();
-        id = c.id;
+        idActionCard = c.id;
         setActionsCard(prev => [...prev, c]);
     }
 
     function alterarCompromisso(c: compromissoDTO, novasProps?: Partial<typeof actionsCard[0]>) {
-        id = c.id;
+        idActionCard = c.id;
         setActionsCard(prev =>
-            prev.map(compromisso => compromisso.id === id ? { ...compromisso, ...novasProps } : compromisso)
+            prev.map(compromisso => compromisso.id === idActionCard ? { ...compromisso, ...novasProps } : compromisso)
         );
     }
 
     function excluirCompromisso(c: compromissoDTO) {
-        id = c.id;
+        idActionCard = c.id;
         setActionsCard(prev =>
-            prev.filter(compromisso => compromisso.id !== id)
+            prev.filter(compromisso => compromisso.id !== idActionCard)
         );
     }
 
@@ -63,15 +88,15 @@ export default function Card({ day, isToday }: DayOfWeek) {
         onOpen();
     }
 
-    function handleSave(c: compromissoDTO){
-        if(c.id > 0)
-            alterarCompromisso(c, {titulo, descricao, horario})
+    function handleSave(c: compromissoDTO) {
+        if (c.id > 0)
+            alterarCompromisso(c, { titulo, descricao, horario })
         else
             adicionarCompromisso(c);
     }
 
     function handleClose() {
-        id = 0;
+        idActionCard = 0;
         setObjCompromisso({ id: 0, titulo: "", descricao: "", horario: "" });
         setTitulo("");
         setDescricao("");
@@ -94,13 +119,8 @@ export default function Card({ day, isToday }: DayOfWeek) {
             backgroundColor: "#BEA0FF"
         }) : false; // Altero o estado do dia atual
     }
-
-    useEffect(() => {
-        VerificaDiaAtual();
-        setObjCompromisso({ id: 0, titulo: "", descricao: "", horario: "" });
-    }, [actionsCard, onClose]);
     return (
-        <div style={{ backgroundColor: actualDay.backgroundColor }} className="flex cardContainer">
+        <div ref={columnRef} style={{ backgroundColor: actualDay.backgroundColor }} className={`flex cardContainer ${isDraggedOver ? "dragged-over" : ""}`}>
             <div className="flex cardHeader">
                 <p>{day}</p>
                 <Icon onClick={onOpen} className="pointer" icon="mdi:plus-circle" color="black" width={20} />
@@ -122,7 +142,13 @@ export default function Card({ day, isToday }: DayOfWeek) {
             <div className="flex cardContent">
                 <div>
                     <div className="flex actionsCard">
-                        <CardAction onEdit={handleSave} isOpen={isOpen} onClose={handleClose} onOpen={handleOpen} data={moment(day, "DD/MM/YYYY").format("DD/MM/YYYY")} compromissos={actionsCard.filter(item => item.titulo !== "")} />
+                        {
+                            actionsCard.filter(item => item.titulo !== "").map(item => {
+                                return (
+                                    <CardAction onOpen={handleOpen} compromisso={item} />
+                                )
+                            })
+                        }
                     </div>
                 </div>
             </div>
