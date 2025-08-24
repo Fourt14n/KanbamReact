@@ -36,6 +36,8 @@ export default function Card({ day, isToday, cardId }: DayOfWeek) {
     const [descricao, setDescricao] = useState("");
     const [horario, setHorario] = useState("");
     const [actionsCard, setActionsCard] = useState<CardActionDTO>([{ id: 0, titulo: "", descricao: "", horario: "" }]);
+
+    const cardRef = useRef<HTMLDivElement>(null);
     let idActionCard = 0;
 
     useEffect(() => {
@@ -113,7 +115,7 @@ export default function Card({ day, isToday, cardId }: DayOfWeek) {
             </div>
             <div className="flex cardContent">
                 <div>
-                    <div className="flex actionsCard">
+                    <div className="flex actionsCard" ref={cardRef}>
                         {
                             actionsCard.filter(item => item.titulo !== "").map(item => {
                                 return (
