@@ -14,7 +14,6 @@ import {
   FormHelperText,
   FormErrorMessage
 } from '@chakra-ui/react'
-import { Icon } from '@iconify/react/dist/iconify.js';
 import "../global.css";
 import * as React from "react";
 

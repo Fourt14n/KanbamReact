@@ -1,6 +1,7 @@
 .cardContainer{
     flex-direction: column;
     min-width: 30%;
+    background-color: #E9E9E9;
 }
 .cardContent{
     overflow: scroll;
@@ -23,4 +24,10 @@
 }
 .cardContent>div{
     width: 100%;
+}
+.dragged-over{
+    background-color: #d0cfcf;
+}
+.today{
+    background-color: #BEA0FF;
 }
