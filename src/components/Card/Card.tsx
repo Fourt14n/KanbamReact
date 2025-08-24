@@ -6,6 +6,7 @@ import { useEffect, useRef, useState } from "react";
 import ModalCompromisso from "../Modals/ModalCompromisso";
 import moment from "moment";
 import { useDisclosure } from "@chakra-ui/react";
+import { useDroppable } from "snapdrag";
 
 
 interface DayOfWeek {
@@ -30,14 +31,23 @@ interface CardActionDTO extends Array<{
 
 
 export default function Card({ day, isToday, cardId }: DayOfWeek) {
-    const { isOpen, onOpen, onClose } = useDisclosure(); 
+    const { isOpen, onOpen, onClose } = useDisclosure();
     const [objCompromisso, setObjCompromisso] = useState<compromissoDTO>({ id: 0, titulo: "", descricao: "", horario: "" });
     const [titulo, setTitulo] = useState("");
     const [descricao, setDescricao] = useState("");
     const [horario, setHorario] = useState("");
     const [actionsCard, setActionsCard] = useState<CardActionDTO>([{ id: 0, titulo: "", descricao: "", horario: "" }]);
-
     const cardRef = useRef<HTMLDivElement>(null);
+
+    const { droppable, hovered } = useDroppable({
+        accepts: "compromisso",
+        data: { zone: cardRef },
+        onDrop({ data }) {
+            data.setActionsCard(data.actionsCard.filter((item: compromissoDTO) => item.id !== data.compromisso.id));
+            actionsCard.push(data.compromisso);
+        },
+    });
+
     let idActionCard = 0;
 
     useEffect(() => {
@@ -93,7 +103,7 @@ export default function Card({ day, isToday, cardId }: DayOfWeek) {
         return last;
     }
 
-    return (
+    return droppable(
         <div className={`flex cardContainer ${isToday ? "today" : ""}`}>
             <div className="flex cardHeader">
                 <p>{day}</p>
@@ -119,7 +129,7 @@ export default function Card({ day, isToday, cardId }: DayOfWeek) {
                         {
                             actionsCard.filter(item => item.titulo !== "").map(item => {
                                 return (
-                                    <CardAction key={item.id} onOpen={handleOpen} compromisso={item} />
+                                    <CardAction setActionsCard={setActionsCard} actionsCard={actionsCard} key={item.id} onOpen={handleOpen} compromisso={item} />
                                 )
                             })
                         }

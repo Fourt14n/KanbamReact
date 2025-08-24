@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type Dispatch, type SetStateAction } from "react";
 import "../global.css";
 import "./CardAction.css";
 import { useDraggable } from "snapdrag";
@@ -12,11 +12,18 @@ interface compromissoDTO {
 
 interface OdeioReact {
     compromisso: compromissoDTO,
-    onOpen: (c: compromissoDTO) => void
+    onOpen: (c: compromissoDTO) => void,
+    actionsCard: CardActionDTO,
+    setActionsCard: Dispatch<SetStateAction<CardActionDTO>>
 }
+interface CardActionDTO extends Array<{
+    id: number,
+    titulo: string;
+    descricao: string;
+    horario: string;
+}> { }
 
-
-export default function CardAction({ compromisso, onOpen }: OdeioReact) {
+export default function CardAction({ compromisso, onOpen, actionsCard, setActionsCard }: OdeioReact) {
     // Isso aqui vai ser a lógica que vai manter o tamanho do card quando tiver sendo arrastado
     // Por padrão ele acabava zuando, por eu estar usando porcentagem
     const cardActionRef = useRef<HTMLDivElement>(null);
@@ -27,7 +34,7 @@ export default function CardAction({ compromisso, onOpen }: OdeioReact) {
 
     const { draggable, isDragging } = useDraggable({
         kind: "compromisso",
-        data: { compromisso },
+        data: { compromisso, actionsCard, setActionsCard },
         move: true,
         onDragStart({ data }) {
             console.log('drag start')
