@@ -10,9 +10,7 @@ import {
   FormControl,
   FormLabel,
   Input,
-  useDisclosure,
   FormHelperText,
-  FormErrorMessage
 } from '@chakra-ui/react'
 import "../global.css";
 import * as React from "react";
@@ -40,12 +38,7 @@ interface compromissoDTO {
   horario: string
 }
 
-interface changer{
-  inputValue: string,
-  setValue: React.Dispatch<React.SetStateAction<string>>
-}
-
-export default function ModalCompromisso({ data, onSave, isOpen, onClose, onOpen, objCompromisso, titulo, setTitulo, descricao, setDescricao, horario, setHorario, onDelete }: Data) {
+export default function ModalCompromisso({ data, onSave, isOpen, onClose, objCompromisso, titulo, setTitulo, descricao, setDescricao, horario, setHorario, onDelete }: Data) {
   const [isErrorTitulo, setIsErrorTitulo] = React.useState(false);
   const [isErrorHorario, setIsErrorHorario] = React.useState(false);
 

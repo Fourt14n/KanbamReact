@@ -30,7 +30,7 @@ interface CardActionDTO extends Array<{
 }> { }
 
 
-export default function Card({ day, isToday, cardId }: DayOfWeek) {
+export default function Card({ day, isToday }: DayOfWeek) {
     const { isOpen, onOpen, onClose } = useDisclosure();
     const [objCompromisso, setObjCompromisso] = useState<compromissoDTO>({ id: 0, titulo: "", descricao: "", horario: "" });
     const [titulo, setTitulo] = useState("");
@@ -39,7 +39,7 @@ export default function Card({ day, isToday, cardId }: DayOfWeek) {
     const [actionsCard, setActionsCard] = useState<CardActionDTO>([{ id: 0, titulo: "", descricao: "", horario: "" }]);
     const cardRef = useRef<HTMLDivElement>(null);
 
-    const { droppable, hovered } = useDroppable({
+    const { droppable } = useDroppable({
         accepts: "compromisso",
         data: { zone: cardRef },
         onDrop({ data }) {

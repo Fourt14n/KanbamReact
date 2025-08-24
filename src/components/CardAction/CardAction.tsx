@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, type Dispatch, type SetStateAction } from "react";
+import { useRef, type Dispatch, type SetStateAction } from "react";
 import "../global.css";
 import "./CardAction.css";
 import { useDraggable } from "snapdrag";
@@ -32,14 +32,14 @@ export default function CardAction({ compromisso, onOpen, actionsCard, setAction
         height: cardActionRef.current?.getBoundingClientRect().height
     }
 
-    const { draggable, isDragging } = useDraggable({
+    const { draggable } = useDraggable({
         kind: "compromisso",
         data: { compromisso, actionsCard, setActionsCard },
         move: true,
-        onDragStart({ data }) {
+        onDragStart() {
             console.log('drag start')
         },
-        component: ({ data }) => {
+        component: () => {
             return (
                 <div style={{width: `${sizes.width}px`, height: `${sizes.height}px`}} className={`flex cardActionContainer`}>
                     <div className="cardActionTitle">
