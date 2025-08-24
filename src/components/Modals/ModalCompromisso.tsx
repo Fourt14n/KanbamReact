@@ -94,7 +94,7 @@ export default function ModalCompromisso({ data, onSave, isOpen, onClose, onOpen
             <FormControl p="2" isRequired>
               <FormLabel>Título do compromisso</FormLabel>
               <Input isInvalid={isErrorTitulo} value={titulo} onChange={(event) => {
-                  setTitulo(event.target.value);
+                  setTitulo(event.target.value.toUpperCase());
                   setIsErrorTitulo(false);
               }} placeholder='Título do compromisso' />
               {isErrorTitulo && (
@@ -108,7 +108,7 @@ export default function ModalCompromisso({ data, onSave, isOpen, onClose, onOpen
             <FormControl p="2" isRequired>
               <FormLabel>Horário do compromisso</FormLabel>
               <Input isInvalid={isErrorHorario} value={horario} onChange={(event) => {
-                  setHorario(event.target.value)
+                  setHorario(event.target.value.toUpperCase())
                   setIsErrorHorario(false);
               }} placeholder='Horário do compromisso' />
               {isErrorHorario && (
